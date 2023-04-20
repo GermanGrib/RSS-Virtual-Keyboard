@@ -38,4 +38,10 @@ html{
   flex-grow: 1;
   border: 1px solid gray;
   font-size: 2rem;
+  transition: transform .1s ease-in-out;
+}
+
+.keyboard__key.is-active {
+  box-shadow:  0 0 20px 10px rgba(0, 0, 0, 0.3) inset;;
+  transform: translateY(0.3rem);
 }
