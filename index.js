@@ -51,33 +51,55 @@ function initKeyboardsBtns(keyboardContainer) {
 
     keyboardContainer.appendChild(keyboardRow);
   }
+
+  const keyboardKeys = document.querySelectorAll('.keyboard__key');
+
+  keyboardKeys.forEach((key, index) => {
+    key.dataset.location = 0;
+    key.dataset.key = key.dataset.key || index; // если data-key не задан, то использовать индекс
+  
+    // проверка наличия data-key у других элементов
+    const keysWithSameDataKey = document.querySelectorAll(`[data-key="${key.dataset.key}"]`);
+    if (keysWithSameDataKey.length > 1) {
+      keysWithSameDataKey.forEach((key, index) => {
+        key.dataset.location = index + 1;
+      });
+    }
+  });
+
+  let backSlashKey = document.querySelectorAll('[data-key="220"]');
+  backSlashKey[0].dataset.location = 0;
+  backSlashKey[1].dataset.location = 0;
+  let winKey = document.querySelector('[data-key="91"]');
+  winKey.dataset.location = 1;
 }
 
 //! Need to handle Ctrl, Alt and another(double Btns) 2) Handle Ctrl + R (and another combinations)
 function handleUserEvents(event) {
+  console.log(event.location)
   const keyBtns = Array.from(document.querySelectorAll('.keyboard__key'));
   const textArea = document.querySelector('.keyboard__screen');
   let currentKeyBtn;
   textArea.focus();
 
   switch (event.type) {
-    case 'mousedown':
-    case 'mouseup': {
-      currentKeyBtn = event.target;
-      break;
-    }
-    case 'keydown':
-    case 'keyup': {
-      currentKeyBtn = keyBtns.find((btn) =>Number(btn.dataset.key) === event.keyCode);
-      break;
-    }
+  case 'mousedown':
+  case 'mouseup': {
+    currentKeyBtn = event.target;
+    break;
+  }
+  case 'keydown':
+  case 'keyup': {
+    currentKeyBtn = keyBtns.find((btn) =>(Number(btn.dataset.key) === event.keyCode && Number(btn.dataset.location) === event.location));
+    break;
+  }
   }
 
   if(currentKeyBtn.classList.contains('keyboard__key')){
     currentKeyBtn.classList.toggle('is-active');
   } else if(currentKeyBtn.classList.contains('keyboard__row')) {
     return;
-  }
+  } 
 
 }
 
