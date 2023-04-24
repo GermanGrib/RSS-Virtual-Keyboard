@@ -2,6 +2,10 @@ html{
   font-size: 10px;
 }
 
+*{
+  transition: .2s ease-in-out;
+}
+
 .keyboard{
   padding-top: 3rem;
   display: flex;
@@ -46,6 +50,11 @@ html{
 }
 
 .keyboard__key.is-active {
+  box-shadow:  0 0 20px 10px rgba(0, 0, 0, 0.3) inset;;
+  transform: translateY(0.3rem);
+}
+
+.keyboard__key.caps {
   box-shadow:  0 0 20px 10px rgba(0, 0, 0, 0.3) inset;;
   transform: translateY(0.3rem);
 }
