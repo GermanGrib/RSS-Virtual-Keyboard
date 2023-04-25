@@ -56,5 +56,10 @@ html{
 
 .keyboard__key.caps {
   box-shadow:  0 0 20px 10px rgba(0, 0, 0, 0.3) inset;;
+  background-color: beige;
   transform: translateY(0.3rem);
+}
+
+.keyboard__key[data-key="38"] {
+  width: 12rem;
 }
