@@ -48,7 +48,11 @@ html{
   border: 1px solid gray;
   font-size: 2rem;
   cursor: pointer;
-  transition: transform .1s ease-in-out;
+  transition: box-shadow .1s ease-in-out transform .1s ease-in-out;
+}
+
+.keyboard__key:hover{
+  box-shadow:  0 0 20px 10px rgba(0, 0, 0, 0.3) inset;
 }
 
 .keyboard__key.is-active {
