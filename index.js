@@ -22,7 +22,7 @@ function initFirstScreen() {
   const keyboardSection = document.createElement('section');
   const keyboardContainer = document.createElement('div');
   const textScreen = document.createElement('textarea');
-  const textScreenPlaceholder = 'To change language use Ctrl + d(D) . . . \nKeyboard was created on Windows';
+  const textScreenPlaceholder = 'To change language use Ctrl + Alt . . . \nKeyboard was created on Windows';
 
   keyboardSection.classList = 'keyboard';
   body.prepend(keyboardSection);
@@ -37,10 +37,11 @@ function initFirstScreen() {
 }
 
 function initKeyboardsBtns(keyboardContainer) {
+
   for (let i = 0; i < fullKeyBoardKeys.length; i++) {
     const keyboardRow = document.createElement('div');
     keyboardRow.classList.add('keyboard__row');
-    for (let j =0; j < keyboardKeysCode[i].length; j++) {
+    for (let j = 0; j < keyboardKeysCode[i].length; j++) {
       const currentKey = keyboardKeysCode[i][j];
       const keyboardKey = document.createElement('div');
       keyboardKey.classList.add('keyboard__key');
@@ -73,112 +74,108 @@ function initKeyboardsBtns(keyboardContainer) {
   winKey.dataset.location = 1;
 }
 
-//! Need to handle Ctrl, Alt and another(double Btns) 2) Handle Ctrl + R (and another combinations)
+//! Need to handle & <> - don't work
 function handleUserEvents(event) {
-  const keyBtns = Array.from(document.querySelectorAll('.keyboard__key'));
-  const textArea = document.querySelector('.keyboard__screen');
+  const KEY_BTNS = Array.from(document.querySelectorAll('.keyboard__key'));
+  const TEXT_AREA = document.querySelector('.keyboard__screen');
+  const CAPSLOCK = 20;
+  const CTRL = 17;
+  const ALT = 18;
+  const BACKSPACE = 8;
+  const SHIFT = 16;
+  const ARROW_KEYS = [37, 38, 39, 40];
+  const SYMBOL_KEYS = ['55', '188', '190'];
   let currentKeyBtn;
-  textArea.focus();
+  let isMouseDownOrKeyDown = event.type === 'mousedown' || event.type === 'keydown';
+  let isMouseUpOrKeyUp = event.type === 'mouseup' || event.type === 'keyup';
 
-  switch (event.type) {
-  case 'mousedown':
-  case 'mouseup': {
-    currentKeyBtn = event.target;
-    let currentDatasetKey = Number(currentKeyBtn.dataset.key);
-    if(event.type === 'mouseup' && currentKeyBtn.classList.contains('keyboard__key')){
-      if(Number(currentKeyBtn.dataset.key) === 8) { //Backspace
-        textArea.value = textArea.value.slice(0, -1);
-      }else if (currentDatasetKey === 37 || currentDatasetKey === 38 || currentDatasetKey === 39 || currentDatasetKey === 40 ) { //Arrows
-        moveCursor(currentDatasetKey);
-      } else{
-        textArea.value =(currentKeyBtn.innerHTML.length < 2) ? textArea.value + currentKeyBtn.innerHTML : textArea.value;
-        textArea.selectionEnd = textArea.value.length;
-        textArea.blur();
-      }
-    }
-    
-    if (currentDatasetKey === 17){  //Ctrl
-      changeKeyboardLanguage(event);
-    }
-    break;
-  }
-  case 'keydown':
-  case 'keyup': {
-    event.preventDefault()
-    currentKeyBtn = keyBtns.find((btn) =>(Number(btn.dataset.key) === event.keyCode && Number(btn.dataset.location) === event.location));
-    let currentDatasetKey = Number(currentKeyBtn.dataset.key);
+  currentKeyBtn = (event.type === 'mousedown' || event.type === 'mouseup') ? event.target :
+    currentKeyBtn = KEY_BTNS.find((btn) =>(Number(btn.dataset.key) === event.keyCode && Number(btn.dataset.location) === event.location)); 
 
-    if (currentDatasetKey === 20 && event.type === 'keyup') { //CapsLock
-      toggleCase(event);
-      break;
-    } else if (currentDatasetKey === 16) { //Shift
-      toggleCase(event);
-    } else if (currentDatasetKey === 17 || currentDatasetKey === 68) { //Ctrl || D(В)
-      changeKeyboardLanguage(event);
-    }
+  TEXT_AREA.focus();
 
-    textArea.value =(currentKeyBtn.innerHTML.length < 2) ? textArea.value + currentKeyBtn.innerHTML : textArea.value;
-  }
+  let currentDatasetKey = Number(currentKeyBtn.dataset.key);
+
+  if(isMouseDownOrKeyDown && currentKeyBtn.classList.contains('keyboard__key')){
+    TEXT_AREA.value = (currentKeyBtn.innerHTML.length < 2 || SYMBOL_KEYS.includes(currentDatasetKey) ) ?
+      TEXT_AREA.value + currentKeyBtn.textContent : TEXT_AREA.value;
+    TEXT_AREA.selectionEnd = TEXT_AREA.value.length;
+    TEXT_AREA.blur();
   }
 
-  if(currentKeyBtn.classList.contains('keyboard__key') && (event.type === 'mousedown' || event.type === 'keydown')) {
+  if (currentDatasetKey === CTRL ||currentDatasetKey === ALT){  
+    changeKeyboardLanguage(event);
+  }
+
+  if((currentDatasetKey === BACKSPACE && event.type === 'keydown') || (currentDatasetKey === BACKSPACE && event.type === 'mousedown')) { //Backspace
+    TEXT_AREA.value = TEXT_AREA.value.slice(0, -1);
+  }
+
+  if ((ARROW_KEYS.includes(currentDatasetKey) && event.type === 'mouseup') ||
+   (ARROW_KEYS.includes(currentDatasetKey) && event.type === 'keyup')) { 
+    moveCursor(currentDatasetKey);
+  }
+
+  if (currentDatasetKey === CAPSLOCK && event.type === 'keyup') { 
+    toggleCase(event);
+  } else if (currentDatasetKey === SHIFT) { 
+    toggleCase(event);
+  } 
+
+  if(currentKeyBtn.classList.contains('keyboard__key') && isMouseDownOrKeyDown) {
     currentKeyBtn.classList.add('is-active');
-  } else if(currentKeyBtn.classList.contains('keyboard__key') && (event.type === 'mouseup' || event.type === 'keyup')) {
+  } else if(currentKeyBtn.classList.contains('keyboard__key') && isMouseUpOrKeyUp) {
     currentKeyBtn.classList.remove('is-active');
   } else if(currentKeyBtn.classList.contains('keyboard__row')) {
     return;
   } 
 
-  keyBtns.forEach(btn => btn.addEventListener('mouseleave', () => keyBtns.forEach(
+  KEY_BTNS.forEach(btn => btn.addEventListener('mouseleave', () => KEY_BTNS.forEach(
     el => el.classList.remove('is-active'))
   ));
 }
 
 function changeKeyboardLanguage(event){
-  const keyboardKeys = document.querySelectorAll('.keyboard__key')
-  const textScreen = document.querySelector('.keyboard__screen');
-  let ctrl = document.querySelectorAll('[data-key="17"]');
+  const KEYBOARD_KEYS = document.querySelectorAll('.keyboard__key');
+  const TEXT_SCREEN = document.querySelector('.keyboard__screen');
+  const CTRL_BTNS = document.querySelectorAll('[data-key="17"]');
+  const ALT_BTNS = document.querySelectorAll('[data-key="18"]');
+  const ALT = 18;
+  const CTRL = 17;
+  const isAltPressedWithActiveCtrl = event.keyCode === ALT && (CTRL_BTNS[0].classList.contains('is-active') || CTRL_BTNS[1].classList.contains('is-active'));
+  const isCtrlPressedWithActiveAlt = event.keyCode === CTRL && (ALT_BTNS[0].classList.contains('is-active') || ALT_BTNS[1].classList.contains('is-active'));
 
-  if (event.type === 'mousedown' || event.type === 'keydown') {
-    event.preventDefault();
-    flag = true;
-  } else if (event.type === 'mouseup' || event.type === 'keyup') {
-    event.preventDefault();
-    flag = false;
-  }
+  flag = (event.type === 'mousedown' || event.type === 'keydown') && true;
 
-
-  if(event.keyCode === 68 && (ctrl[0].classList.contains('is-active') || ctrl[1].classList.contains('is-active'))) {
-    if(event.keyCode === 68 && flag) {
-      event.preventDefault();
-      currentLanguage = (currentLanguage === 'en') ? 'ru' : 'en';
-
-      keyboardKeys.forEach(key => {
-        const currentKey = key.dataset.key;
-
-        fullKeyBoardKeys.forEach(keysRow => {
-          if (keysRow.hasOwnProperty(currentKey)) {
-            key.innerHTML = keysRow[currentKey][currentLanguage];
-          }
-        });
+  if ((isAltPressedWithActiveCtrl || isCtrlPressedWithActiveAlt) && (event.keyCode === ALT || event.keyCode === CTRL) && flag) {
+    currentLanguage = (currentLanguage === 'en') ? 'ru' : 'en';
+  
+    KEYBOARD_KEYS.forEach(key => {
+      const currentKey = key.dataset.key;
+  
+      fullKeyBoardKeys.forEach(keysRow => {
+        if (keysRow.hasOwnProperty(currentKey)) {
+          key.innerHTML = keysRow[currentKey][currentLanguage];
+        }
       });
-
-      textScreen.placeholder = (currentLanguage === 'en') ?
-        'To change language use Ctrl + d(D) . . . \nKeyboard was created on Windows' :
-        'Сменить язык клацай Ктрл + в(В) . . . \nклава была сделана на Винде';
-    }
-    // ! Need to handle if i use just d - that it will be written on screen. 
-  } 
+    });
+  
+    TEXT_SCREEN.placeholder = (currentLanguage === 'en') ?
+      'To change language use Ctrl + Alt . . . \nKeyboard was created on Windows' :
+      'Сменить язык клацай Ктрл + Алт . . . \nклава была сделана на Винде';
+  }
 }
 
 function toggleCase(event) {
+  const SHIFT = 16;
+  const CAPSLOCK = 20;
   const keyBtns = Array.from(document.querySelectorAll('.keyboard__key'));
   let firstLett = document.querySelector('[data-key="81"]').textContent;
   let isLettLowerCase = (firstLett === firstLett.toLowerCase()) ? true : false;
   let capsLk = document.querySelector('[data-key="20"]');
 
-  if ((event.keyCode === 20 && !capsLk.classList.contains('caps')) || //CapsLock
-   (event.keyCode === 16 && event.type === 'mousedown' || event.keyCode === 16 && event.type === 'keydown')){ //Shift
+  if ((event.keyCode === CAPSLOCK && !capsLk.classList.contains('caps')) ||
+   (event.keyCode === SHIFT && event.type === 'mousedown' || event.keyCode === SHIFT && event.type === 'keydown')){ 
     if (isLettLowerCase) {
       keyBtns.forEach(key => {
         const text = key.textContent;
@@ -186,11 +183,11 @@ function toggleCase(event) {
           key.textContent = text.toUpperCase();
         }
       });
-      if(event.keyCode === 20){
+      if(event.keyCode === CAPSLOCK){
         capsLk.classList.add('caps');
       }
     } 
-  } else { //CapsLock {
+  } else { 
     
     keyBtns.forEach(key => {
       const text = key.textContent;
@@ -198,13 +195,13 @@ function toggleCase(event) {
         key.textContent = text.toLowerCase();
       }
     });
-    if(event.keyCode === 20 && capsLk.classList.contains('caps')){
+    if(event.keyCode === CAPSLOCK && capsLk.classList.contains('caps')){
       capsLk.classList.remove('caps');
     }
   }
 
 
-  if (event.keyCode === 16 && event.type === 'mousedown' || event.keyCode === 16 && event.type === 'keydown') {
+  if (event.keyCode === SHIFT && event.type === 'mousedown' || event.keyCode === SHIFT && event.type === 'keydown') {
       
     for(let i = 0; i < keyBtns.length; i++) {
       const key = keyBtns[i];
@@ -214,13 +211,13 @@ function toggleCase(event) {
         key.innerHTML = obj[dataKey][`shift${currentLanguage}`]
       }
     }
-  } else if(event.keyCode === 16 && event.type === 'mouseup' || event.keyCode === 16 && event.type === 'keyup') {
+  } else if(event.keyCode === SHIFT && event.type === 'mouseup' || event.keyCode === SHIFT && event.type === 'keyup') {
     for(let i = 0; i < keyBtns.length; i++) {
       const key = keyBtns[i];
       const dataKey = key.getAttribute('data-key');
       const obj = fullKeyBoardKeys.find(item => item.hasOwnProperty(dataKey));
       if (obj && currentLanguage in obj[dataKey]) {
-        key.innerHTML = obj[dataKey][currentLanguage]
+        key.innerHTML = obj[dataKey][currentLanguage];
       }
     }
   }

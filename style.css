@@ -17,6 +17,7 @@ html{
   margin-bottom: 5rem;
   width: 40%;
   height: 35vh;
+  font-size: 2rem;
 }
 
 .keyboard__screen:focus-visible{
@@ -46,6 +47,7 @@ html{
   flex-grow: 1;
   border: 1px solid gray;
   font-size: 2rem;
+  cursor: pointer;
   transition: transform .1s ease-in-out;
 }
 
