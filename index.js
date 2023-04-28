@@ -14,7 +14,8 @@ const keyboardKeysCode = [
   [17, 91, 18, 32, 18, 17, 37, 40, 39]
 ];
 const userEvents = ['keydown', 'keyup', 'mousedown', 'mouseup',];
-console.log('%cHere is desctrution example. Its on 178 stroke : const {key: currentKey} = key.dataset;', 'color: aqua');
+
+console.log('%cHello my friend. Stroke 178 in index.js - Here is destructuring example: const {key: currentKey} = key.dataset;', 'color: aqua');
 
 let currentLanguage = localStorage.getItem('currLang') || 'en';
 
