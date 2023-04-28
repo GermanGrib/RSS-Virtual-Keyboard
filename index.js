@@ -14,9 +14,9 @@ const keyboardKeysCode = [
   [17, 91, 18, 32, 18, 17, 37, 40, 39]
 ];
 const userEvents = ['keydown', 'keyup', 'mousedown', 'mouseup',];
+console.log('%cHere is desctrution example. Its on 178 stroke : const {key: currentKey} = key.dataset;', 'color: aqua');
 
 let currentLanguage = localStorage.getItem('currLang') || 'en';
-let flag = false;
 
 function initFirstScreen() {
   const BODY = document.body;
@@ -76,9 +76,7 @@ function initKeyboardsBtns(keyboardContainer) {
   const WINDOWS_KEY = document.querySelector('[data-key="91"]');
   WINDOWS_KEY.dataset.location = 1;
 }
-//! Finish it  usage of ES6+ features (classes, property destructuring, etc): 
-//! Need yo handle this the Shift, Alt, Ctrl, Caps lock and Space keys should work as on a real keyboard
-//! Need to handle & <> - don't work
+
 function handleUserEvents(event) {
   const ENTER = 13;
   const DELETE = 46;
@@ -106,14 +104,14 @@ function handleUserEvents(event) {
   let currentDatasetKey = Number(currentKeyBtn.dataset.key);
 
   if(isMouseDownOrKeyDown && currentKeyBtn.classList.contains('keyboard__key')){
-    TEXT_AREA.value = (currentKeyBtn.innerHTML.length < 2 || SYMBOL_KEYS.includes(currentDatasetKey) ) ?
+    TEXT_AREA.value = (currentKeyBtn.textContent.length < 2 || SYMBOL_KEYS.includes(currentDatasetKey) ) ?
       TEXT_AREA.value + currentKeyBtn.textContent : TEXT_AREA.value;
     TEXT_AREA.selectionEnd = TEXT_AREA.value.length;
     TEXT_AREA.blur();
   }
 
   if (currentDatasetKey === CTRL ||currentDatasetKey === ALT){  
-    changeKeyboardLanguage(event);
+    changeKeyboardLanguage(event, currentDatasetKey);
   }
 
   if((currentDatasetKey === BACKSPACE && event.type === 'keydown') || (currentDatasetKey === BACKSPACE && event.type === 'mousedown')) {
@@ -161,23 +159,23 @@ function handleUserEvents(event) {
   ));
 }
 
-function changeKeyboardLanguage(event){
+function changeKeyboardLanguage(event, currentDatasetKey){
   const KEYBOARD_KEYS = document.querySelectorAll('.keyboard__key');
   const TEXT_SCREEN = document.querySelector('.keyboard__screen');
   const CTRL_BTNS = document.querySelectorAll('[data-key="17"]');
   const ALT_BTNS = document.querySelectorAll('[data-key="18"]');
   const ALT = 18;
   const CTRL = 17;
-  const isAltPressedWithActiveCtrl = event.keyCode === ALT && (CTRL_BTNS[0].classList.contains('is-active') || CTRL_BTNS[1].classList.contains('is-active'));
-  const isCtrlPressedWithActiveAlt = event.keyCode === CTRL && (ALT_BTNS[0].classList.contains('is-active') || ALT_BTNS[1].classList.contains('is-active'));
-
-  flag = (event.type === 'mousedown' || event.type === 'keydown') && true;
-
-  if ((isAltPressedWithActiveCtrl || isCtrlPressedWithActiveAlt) && (event.keyCode === ALT || event.keyCode === CTRL) && flag) {
+  const flag = ['mousedown', 'keydown'].includes(event.type);
+  const isAltPressedWithActiveCtrl = currentDatasetKey === ALT && (CTRL_BTNS[0].classList.contains('is-active') || CTRL_BTNS[1].classList.contains('is-active'));
+  const isCtrlPressedWithActiveAlt = currentDatasetKey === CTRL && (ALT_BTNS[0].classList.contains('is-active') || ALT_BTNS[1].classList.contains('is-active'));
+  
+  
+  if ((isAltPressedWithActiveCtrl || isCtrlPressedWithActiveAlt) && (currentDatasetKey === ALT || currentDatasetKey === CTRL) && flag) {
     currentLanguage = (currentLanguage === 'en') ? 'ru' : 'en';
   
     KEYBOARD_KEYS.forEach(key => {
-      const currentKey = key.dataset.key;
+      const {key: currentKey} = key.dataset;
   
       fullKeyBoardKeys.forEach(keysRow => {
         if (keysRow.hasOwnProperty(currentKey)) {
@@ -236,7 +234,7 @@ function toggleCase(event, currentDatasetKey) {
       const dataKey = key.getAttribute('data-key');
       const obj = fullKeyBoardKeys.find(item => item.hasOwnProperty(dataKey));
       if (obj && `shift${currentLanguage}` in obj[dataKey]) {
-        key.innerHTML = obj[dataKey][`shift${currentLanguage}`]
+        key.innerHTML = obj[dataKey][`shift${currentLanguage}`];
       }
     }
   } else if(currentDatasetKey === SHIFT && event.type === 'mouseup' || currentDatasetKey === SHIFT && event.type === 'keyup') {
