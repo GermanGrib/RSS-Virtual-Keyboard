@@ -122,7 +122,9 @@ function handleUserEvents(event) {
     let newValue = TEXT_AREA.value.substring(0, cursorPos - 1) + TEXT_AREA.value.substring(cursorPos);
     TEXT_AREA.value = newValue;
     TEXT_AREA.selectionStart = cursorPos - 1;
-    TEXT_AREA.selectionEnd = cursorPos - 1;    
+
+    TEXT_AREA.selectionEnd = cursorPos - 1;   
+
   }
 
   if (currentDatasetKey === CAPSLOCK && isMouseUpOrKeyUp) { 
