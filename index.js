@@ -261,4 +261,3 @@ function toggleCase(event, currentDatasetKey) {
 initFirstScreen();
 userEvents.forEach((event) => {
   document.addEventListener(event, handleUserEvents);
-});
