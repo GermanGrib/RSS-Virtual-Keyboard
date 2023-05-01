@@ -266,3 +266,5 @@ initFirstScreen();
 userEvents.forEach((event) => {
   document.addEventListener(event, handleUserEvents);
 });
+
+console.log('check')
