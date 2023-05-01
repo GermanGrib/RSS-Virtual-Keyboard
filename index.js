@@ -97,7 +97,13 @@ function handleUserEvents(event) {
   let isMouseUpOrKeyUp = event.type === 'mouseup' || event.type === 'keyup';
 
   currentKeyBtn = (event.type === 'mousedown' || event.type === 'mouseup') ? event.target :
-    currentKeyBtn = KEY_BTNS.find((btn) =>(Number(btn.dataset.key) === event.keyCode && Number(btn.dataset.location) === event.location)); 
+    KEY_BTNS.find((btn) =>{
+      console.log(btn.dataset.key, 'DATASET KEY');
+      console.log(event.keyCode, 'EVENT KEYCODE');
+      console.log(btn.dataset.location, 'DATA SET LOCATION');
+      console.log(event.location, 'EVENT LOCATION');
+      return (Number(btn.dataset.key) === event.keyCode && Number(btn.dataset.location) === event.location);
+    }); 
 
   if (event.type === 'keyup' || event.type === 'keydown') {
     event.preventDefault();
