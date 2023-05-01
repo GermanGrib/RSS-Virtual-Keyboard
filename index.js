@@ -1,4 +1,3 @@
-
 const fullKeyBoardKeys = [
   {192: {'en': '`', 'ru': 'ё', 'shiften': '~', 'shiftru': 'Ё'}, 49: {'en': '1', 'ru': '1', 'shiften': '!', 'shiftru': '!'}, 50: {'en': '2', 'ru': '2','shiften': '@', 'shiftru': '"'}, 51: {'en': '3', 'ru': '3','shiften': '#', 'shiftru': '№'}, 52: {'en': '4', 'ru': '4','shiften': '$', 'shiftru': ';'}, 53:{'en': '5', 'ru': '5','shiften': '%', 'shiftru': '%'}, 54: {'en': '6', 'ru': '6','shiften': '^', 'shiftru': ':'}, 55: {'en': '7', 'ru': '7','shiften': '&', 'shiftru': '?'}, 56: {'en': '8', 'ru': '8','shiften': '*', 'shiftru': '*'}, 57: {'en': '9', 'ru': '9','shiften': '(', 'shiftru': '('}, 48:{'en': '0', 'ru': '0','shiften': ')', 'shiftru': ')'}, 189:{'en': '-', 'ru': '-','shiften': '_', 'shiftru': '_'}, 187: {'en': '=', 'ru': '=','shiften': '+', 'shiftru': '+'}, 8:{'en': 'Backspace', 'ru': 'Бэкспейс'}},
   {9: {'en': 'Tab', 'ru': 'Таб'}, 81: {'en': 'q', 'ru': 'й'}, 87: {'en': 'w', 'ru': 'ц'}, 69: {'en': 'e', 'ru': 'у'}, 82: {'en': 'r', 'ru': 'к'}, 84:{'en': 't', 'ru': 'е'}, 89: {'en': 'y', 'ru': 'н'}, 85: {'en': 'u', 'ru': 'г'}, 73:{'en': 'i', 'ru': 'ш'}, 79: {'en': 'o', 'ru': 'щ'}, 80: {'en': 'p', 'ru': 'з'}, 219:{'en': '[','ru': 'х'}, 221:{'en': ']','ru': 'ъ'}, 220:{'en': '\\','ru': '\\','shiften': '|', 'shiftru': '/'}, 46:{'en': 'Delete','ru': 'Дэлит'}},
@@ -17,6 +16,7 @@ const keyboardKeysCode = [
   [17, 91, 18, 32, 18, 17, 37, 40, 39]
 ];
 const userEvents = ['keydown', 'keyup', 'mousedown', 'mouseup',];
+
 console.log('%cHello my friend. Stroke 178 in index.js - Here is destructuring example: const {key: currentKey} = key.dataset;', 'color: aqua');
 
 let currentLanguage = localStorage.getItem('currLang') || 'en';
@@ -262,3 +262,5 @@ initFirstScreen();
 userEvents.forEach((event) => {
   document.addEventListener(event, handleUserEvents);
 });
+
+console.log('check')
