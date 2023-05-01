@@ -122,9 +122,7 @@ function handleUserEvents(event) {
     let newValue = TEXT_AREA.value.substring(0, cursorPos - 1) + TEXT_AREA.value.substring(cursorPos);
     TEXT_AREA.value = newValue;
     TEXT_AREA.selectionStart = cursorPos - 1;
-
     TEXT_AREA.selectionEnd = cursorPos - 1;   
-
   }
 
   if (currentDatasetKey === CAPSLOCK && isMouseUpOrKeyUp) { 
@@ -247,6 +245,7 @@ function toggleCase(event, currentDatasetKey) {
       if (obj && `shift${currentLanguage}` in obj[dataKey]) {
         key.innerHTML = obj[dataKey][`shift${currentLanguage}`];
       }
+      CAPSLK_BTN.classList.remove('caps');
     }
   } else if(currentDatasetKey === SHIFT && event.type === 'mouseup' || currentDatasetKey === SHIFT && event.type === 'keyup') {
     for(let i = 0; i < KEY_BTNS.length; i++) {
@@ -258,6 +257,7 @@ function toggleCase(event, currentDatasetKey) {
         key.innerHTML = obj[dataKey][currentLanguage];
       }
     }
+    CAPSLK_BTN.classList.remove('caps');
   }
 
 }
